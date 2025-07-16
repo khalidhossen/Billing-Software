@@ -1,0 +1,56 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.InvoiceDto>
+
+<div class="table-responsive">
+    <table class="table table-striped" id="invoiceTable">
+        <thead class="table-secondary text-center">
+            <tr>
+                <th class="align-middle">Customer Name</th>
+                <th class="align-middle">Phone Number</th>
+                <th class="align-middle">Grand Total</th>
+                <th class="align-middle">Total Discount</th>
+                <th class="align-middle">Payment</th>
+                <th class="align-middle">Payment Method</th>
+                <th class="align-middle">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model.Items)
+            {
+                <tr>
+                    <td class="align-middle">@invoice.CustomerName</td>
+                    <td class="text-center align-middle">@invoice.CustomerPhone</td>
+                    <td class="text-center align-middle">@invoice.GrandTotal</td>
+                    <td class="text-center align-middle">@invoice.TotalDiscount</td>
+                    <td class="text-center align-middle">@invoice.PayAmount</td>
+                    <td class="text-center align-middle">@invoice.PaymentMethod</td>
+                    <td class="text-center align-middle">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a class="btn btn-info btn-sm details-btn" data-id="@invoice.InvoiceId">Details</a>
+                            <a class="btn btn-danger btn-sm delete-btn" data-id="@invoice.InvoiceId">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <span>Showing page @Model.PageNumber of @Model.TotalPages (Total: @Model.TotalItems)</span>
+    <nav>
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="javascript:void(0);" onclick="loadInvoicePage(@(Model.PageNumber - 1))">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadInvoicePage(@i)">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="javascript:void(0);" onclick="loadInvoicePage(@(Model.PageNumber + 1))">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

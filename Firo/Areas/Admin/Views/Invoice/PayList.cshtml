@@ -1,0 +1,48 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.PayDueDto>
+
+@{
+    ViewData["Title"] = "Dues";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<header>
+    <link href="~/css/dataTable.css" rel="stylesheet" />
+</header>
+
+<h3>Paid List</h3>
+
+@* <p>
+    <a href="@Url.Action("Create", "Customer")" class="btn btn-primary">Create New Customer</a>
+</p> *@
+
+<div class="card">
+    <div class="card-body">
+        <div id="payTableContainer">
+            @await Html.PartialAsync("/Areas/Admin/Views/PartialViews/_PayTablePartial.cshtml", Model)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/CustomJs/InvoiceCreate.js"></script>
+
+    
+
+    <script>
+        function loadPayPage(pageNumber) {
+            $.ajax({
+                url: '@Url.Action("PayList", "Invoice")',
+                type: 'GET',
+                data: { page: pageNumber },
+                success: function (result) {
+                    $('#payTableContainer').html(result);
+                },
+                error: function () {
+                    alert('Error loading data.');
+                }
+            });
+        }
+    </script>
+
+
+}

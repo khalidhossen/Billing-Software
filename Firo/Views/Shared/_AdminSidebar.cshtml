@@ -1,0 +1,160 @@
+﻿@{
+    string Admin = "Admin";
+}
+
+<!-- Sidebar Menu -->
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        @* Dashboard URL selection *@
+        @{
+            string dashboardUrl = "";
+            string dashboardText = "Dashboard";
+
+            if (User.IsInRole("Admin"))
+            {
+                dashboardUrl = "/Admin/Dashboard";
+            }
+            else if (User.IsInRole("Management"))
+            {
+                dashboardUrl = "/Admin/ManagementDashboard";
+            }
+            else if (User.IsInRole("Sales"))
+            {
+                dashboardUrl = "/Admin/SalesDashboard";
+            }
+        }
+
+        @* Dashboard menu item *@
+        @if (!string.IsNullOrEmpty(dashboardUrl))
+        {
+            <li class="nav-item">
+                <a href="@dashboardUrl" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>@dashboardText</p>
+                </a>
+            </li>
+        }
+
+        @* Admin role-based menus *@
+        @if (User.IsInRole(Admin))
+        {
+            // Separate flags for each main menu group
+            var customerMenu = GetActiveClass("Customer", "List", "Create") == "active";
+            var settingsMenu = GetActiveClass("CompanySetup", "Index") == "active" ||
+            GetActiveClass("Branch", "Index") == "active" ||
+            GetActiveClass("LookUp", "CreateLookUp") == "active";
+            var formMenu = GetActiveClass("Invoice", "InvoiceCreate", "InvoiceList", "DueList", "PayList") == "active";
+
+            <!-- Customer -->
+            <li class="nav-item @(customerMenu ? "menu-open" : "")">
+                <a href="#" class="nav-link @(customerMenu ? "active" : "")">
+                    <i class="nav-icon fa fa-user-friends"></i>
+                    <p>
+                        Customer
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/Customer/List" class="nav-link @(GetActiveClass("Customer", "List"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Customer List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Customer/Create" class="nav-link @(GetActiveClass("Customer", "Create"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Create Customer</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Settings -->
+            <li class="nav-item @(settingsMenu ? "menu-open" : "")">
+                <a href="#" class="nav-link @(settingsMenu ? "active" : "")">
+                    <i class="nav-icon fa fa-cogs"></i>
+                    <p>
+                        Settings
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/ProfileSetup/Index" class="nav-link @(GetActiveClass("CompanySetup", "Index"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Company Setup</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Branch/Index" class="nav-link @(GetActiveClass("Branch", "Index"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Branch</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/LookUp/CreateLookUp" class="nav-link @(GetActiveClass("LookUp", "CreateLookUp"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>LookUp</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Form -->
+            <li class="nav-item @(formMenu ? "menu-open" : "")">
+                <a href="#" class="nav-link @(formMenu ? "active" : "")">
+                    <i class="nav-icon fas fa-clipboard-list"></i>
+                    <p>
+                        Form
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/Invoice/InvoiceCreate" class="nav-link @(GetActiveClass("Invoice", "InvoiceCreate"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Invoice</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Invoice/InvoiceList" class="nav-link @(GetActiveClass("Invoice", "InvoiceList"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Invoice List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Invoice/DueList" class="nav-link @(GetActiveClass("Invoice", "DueList"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Due List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Invoice/PayList" class="nav-link @(GetActiveClass("Invoice", "PayList"))">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Pay List</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+    </ul>
+</nav>
+
+@functions {
+    string GetActiveClass(string controller, params string[] actions)
+    {
+        var routeValues = ViewContext.RouteData.Values;
+        var currentController = routeValues["controller"]?.ToString();
+        var currentAction = routeValues["action"]?.ToString();
+
+        if (currentController == controller)
+        {
+            if (actions.Length > 0 && actions.Contains(currentAction))
+            {
+                return "active";
+            }
+        }
+        return string.Empty;
+    }
+}

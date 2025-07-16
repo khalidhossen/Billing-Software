@@ -1,0 +1,105 @@
+﻿@using Firo.Application.Models
+@model BranchDto
+@{
+	ViewData["Title"] = "Branch Setup";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-10">
+			<form id="BranchForm">
+				<br />
+				<div class="card">
+					<div class="card-header">
+						<h2>Branch Setup</h2>
+					</div>
+					<div class="card-body">
+
+						<input type="hidden" value="@Model.BranchId" id="BranchId" name="BranchId" />
+
+						<div class="row">
+
+							<div class="col-md-6 mb-3">
+								<label for="BranchName" class="form-label">Branch Name:<span style="color: red;">*</span></label>
+								<input type="text" class="form-control" id="BranchName" name="BranchName" value="@Model.BranchName" required placeholder="Branch Name" />
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="Location" class="form-label">Location:</label>
+								<input type="text" class="form-control" id="Location" name="Location" value="@Model.Location" required placeholder="Location" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group">
+									<label for="CompanyProfileId" class="form-label">Company Name:<span style="color: red;">*</span></label>
+
+									<select class="form-control" name="CompanyProfileId" id="CompanyProfileId">
+										<option value="">-- Select a Company --</option>
+										@if (ViewBag.Companys != null)
+										{
+											var selectedCompanyId = Model?.CompanyProfileId.ToString();
+											foreach (var item in ViewBag.Companys as List<SelectListItem>)
+											{
+												<option value="@item.Value" @(item.Value == selectedCompanyId ? "selected" : "")>@item.Text</option>
+											}
+										}
+									</select>
+
+
+								</div>
+							</div>
+
+
+							<div class="col-md-6 mb-3">
+								<label for="Phone" class="form-label">Phone:</label>
+								<input type="tel" class="form-control" id="Phone" name="Phone" value="@Model.Phone" required placeholder="Phone" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Email" class="form-label">Email:</label>
+								<input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required placeholder="Email" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group">
+									<label for="IsMainBranch" class="form-label">IsMainBranch:</label>
+									<div class="form-check">
+										@Html.CheckBoxFor(m => m.IsMainBranch, new { @class = "form-check-input", id = "IsMainBranch" })
+										<label class="form-check-label" for="IsMainBranch">Is Main Branch</label>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group">
+									<label for="IsActive" class="form-label">IsActive:</label>
+									<div class="form-check">
+										@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", id = "IsActive" })
+										<label class="form-check-label" for="IsActive">Active</label>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="text-end">
+					<button type="button" id="saveBranch" class="btn btn-primary">Save Branch</button>
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+</div>
+
+@section Scripts {
+
+	<script src="~/CustomJS/CreateBranch.js"></script>
+
+}

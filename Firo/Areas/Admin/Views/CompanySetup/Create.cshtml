@@ -1,0 +1,189 @@
+﻿@using Firo.Application.Models
+@model CompanyProfileDto
+@{
+	ViewData["Title"] = "Company Profile Setup";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-10">
+			<form id="companyProfileForm">
+				<br />
+				<div class="card">
+					<div class="card-header">
+						<h2>Company Profile Setup</h2>
+					</div>
+					<div class="card-body">
+
+						<input type="hidden" value="@Model.CompanyProfileId" id="CompanyProfileId" name="CompanyProfileId" />
+
+						<div class="row">
+
+							<div class="col-md-6 mb-3">
+								<label for="CompanyName" class="form-label">Company Name:<span style="color: red;">*</span></label>
+								<input type="text" class="form-control" id="CompanyName" name="CompanyName" value="@Model.CompanyName" required placeholder="Company Name" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Address" class="form-label">Address:</label>
+								<input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" required placeholder="Address" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="TradeLicenseNo" class="form-label">TradeLicenseNo:</label>
+								<input type="text" class="form-control" id="TradeLicenseNo" name="TradeLicenseNo" value="@Model.TradeLicenseNo" required placeholder="TradeLicenseNo" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="BIN" class="form-label">BIN:</label>
+								<input type="text" class="form-control" id="BIN" name="BIN" value="@Model.BIN" required placeholder="BIN" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Phone" class="form-label">Phone:</label>
+								<input type="tel" class="form-control" id="Phone" name="Phone" value="@Model.Phone" required placeholder="Phone" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Email" class="form-label">Email:</label>
+								<input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required placeholder="Email" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Logo" class="form-label">Logo:</label>
+								<input type="file" class="form-control" id="Logo" name="Logo" value="@Model.LogoPath" required />
+								<input type="hidden" id="LogoPath" name="LogoPath" value="@Model.LogoPath">
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group text-center">
+									<label class="control-label d-block"></label>
+									<img id="ImagePreview" src="@(string.IsNullOrEmpty(Model.LogoPath) ? "#" : Url.Content($"~/{Model.LogoPath}"))" alt="Image Preview"
+										 style="max-width: 60%; max-height: 100%; display: none; border: 1px solid #ddd; padding: 5px; border-radius: 5px; margin-top: 30px;" />
+								</div>
+								<button type="button" id="removeLogo" class="btn btn-danger mt-3" style="@(string.IsNullOrEmpty(Model.LogoPath) ? "display: none;" : "display: block;")">Remove Logo</button>
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group">
+									<label for="IsActive" class="form-label">IsActive:</label>
+									<div class="form-check">
+										@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", id = "IsActive" })
+										<label class="form-check-label" for="IsActive">Active</label>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="card">
+					<div class="card-header">
+						<h2>Mail Configuration</h2>
+					</div>
+					<div class="card-body">
+
+						<input type="hidden" value="@Model.CompanyProfileId" id="CompanyProfileId" name="CompanyProfileId" />
+
+						<div class="row">
+
+							<div class="col-md-6 mb-3">
+								<label for="MailServer" class="form-label">Mail Server:</label>
+								<input type="text" class="form-control" id="MailServer" name="MailServer" value="@Model.MailServer" required placeholder="MailServer" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Port" class="form-label">Port:</label>
+								<input type="number" class="form-control" id="Port" name="Port" value="@Model.Port" required placeholder="Port" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="SenderName" class="form-label">Sender Name:</label>
+								<input type="text" class="form-control" id="SenderName" name="SenderName" value="@Model.SenderName" required placeholder="SenderName" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="SenderEmail" class="form-label">Sender Email:</label>
+								<input type="email" class="form-control" id="SenderEmail" name="SenderEmail" value="@Model.SenderEmail" required placeholder="SenderEmail" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="UserName" class="form-label">User Name:</label>
+								<input type="text" class="form-control" id="UserName" name="UserName" value="@Model.UserName" required placeholder="UserName" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="Password" class="form-label">Password:</label>
+								<input type="text" class="form-control" id="Password" name="Password" value="@Model.Password" required placeholder="Password" />
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-group">
+									<label for="EnableSSL" class="form-label">Enable SSL:</label>
+									<div>
+										<label>
+											@Html.RadioButtonFor(m => m.EnableSSL, true) True
+										</label>
+										<label>
+											@Html.RadioButtonFor(m => m.EnableSSL, false) False
+										</label>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="text-end">
+					<button type="button" id="saveProfile" class="btn btn-primary">Save Profile</button>
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+</div>
+
+@section Scripts {
+
+	<script src="~/CustomJS/CreateCompanyProfile.js"></script>
+
+	<script>
+		document.getElementById('Logo').addEventListener('change', function (event) {
+			const file = event.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+
+					const preview = document.getElementById('ImagePreview');
+					const removeButton = document.getElementById('removeLogo');
+
+					preview.src = e.target.result;
+					preview.style.display = 'block';
+					removeButton.style.display = 'block';
+
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		document.getElementById('removeLogo').addEventListener('click', function () {
+
+			const preview = document.getElementById('ImagePreview');
+			const LogoPath = document.getElementById('LogoPath');
+			const imageInput = document.getElementById('Logo');
+			const removeButton = document.getElementById('removeLogo');
+
+			preview.src = '#';
+			preview.style.display = 'none';
+			imageInput.value = '';
+			LogoPath.value = '';
+			removeButton.style.display = 'none';
+
+		});
+	</script>
+
+}

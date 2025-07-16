@@ -1,0 +1,60 @@
+﻿@using Firo.Application.Models
+@model IEnumerable<BranchDto>
+
+@{
+    ViewData["Title"] = "Branches";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<header>
+    <link href="~/css/dataTable.css" rel="stylesheet" />
+</header>
+
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Branch List</h5>
+    </div>
+    <div class="card-body">
+        <p>
+            <a href="@Url.Action("Create", "Branch")" class="btn btn-success mb-3">Create New Branch</a>
+        </p>
+        <div class="table-responsive">
+            <table class="table table-striped" id="BranchTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FirstOrDefault().CompanyName)</th>
+                        <th>@Html.DisplayNameFor(model => model.FirstOrDefault().BranchName)</th>
+                        <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Phone)</th>
+                        <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Location)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.CompanyName</td>
+                            <td>@item.BranchName</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Email</td>
+                            <td>@item.Location</td>
+                            <td>
+                                <a href="@Url.Action("Edit", "Branch", new { id = item.BranchId })" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="@Url.Action("Delete", "Branch", new { id = item.BranchId })" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/dataTables.js"></script>
+    <script>
+        new DataTable('#BranchTable');
+        $('label[for="dt-length-0"]').text('');
+    </script>
+}

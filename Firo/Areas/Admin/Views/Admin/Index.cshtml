@@ -1,0 +1,165 @@
+﻿@model Firo.Application.ViewModels.DashBoardVM
+@using System.Text.Json
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <!-- Customer Summary -->
+    <div class="col-md-4">
+        <div class="card text-end border-0 shadow" style="background: linear-gradient(to right, #e0f7fa, #ffffff);">
+            <div class="card-body">
+                <h5 class="card-title text-primary">
+                    <i class="fas fa-users"></i> Customer Summary (Today)
+                </h5><br />
+                <p class="mb-2">Total Customers: <strong>@Model.TotalCustomers</strong></p>
+                <p class="mb-0">New Customers: <strong>@Model.TodaysNewCustomers</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Summary -->
+    <div class="col-md-4">
+        <div class="card text-end border-0 shadow" style="background: linear-gradient(to right, #e8f5e9, #ffffff);">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <i class="fas fa-chart-line"></i> Sales Summary (Today)
+                </h5><br />
+                <p class="mb-2">Total Sales: <strong>@Model.TotalSales Tk</strong></p>
+                <p class="mb-0">Todays Sales: <strong>@Model.TodaysSales Tk</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Due Summary -->
+    <div class="col-md-4">
+        <div class="card text-end border-0 shadow" style="background: linear-gradient(to right, #ffebee, #ffffff);">
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    <i class="fas fa-money-bill-wave"></i> Due Summary (Today)
+                </h5><br />
+                <p class="mb-2">Total Due: <strong>@Model.TotalDue Tk</strong></p>
+                <p class="mb-0">Todays Due: <strong>@Model.TodaysDue Tk</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0"><i class="fas fa-chart-area me-2"></i> Daily Trends (Sales & Customers)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="salesCustomerChart" height="60"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0"><i class="fas fa-chart-area me-2"></i> Monthly Trends (Sales & Customers)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlySalesCustomerChart" height="60"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const dailyLabels = @Html.Raw(JsonSerializer.Serialize(Model.DailyLabels));
+        const dailySales = @Html.Raw(JsonSerializer.Serialize(Model.DailySales));
+        const dailyCustomers = @Html.Raw(JsonSerializer.Serialize(Model.DailyCustomers));
+
+        const ctx = document.getElementById('salesCustomerChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dailyLabels,
+                datasets: [
+                    {
+                        label: 'Sales (Tk)',
+                        data: dailySales,
+                        backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Customers',
+                        data: dailyCustomers,
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        // Monthly Chart
+        const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyLabels));
+        const monthlySales = @Html.Raw(JsonSerializer.Serialize(Model.MonthlySales));
+        const monthlyCustomers = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyCustomers));
+
+        const ctxMonthly = document.getElementById('monthlySalesCustomerChart').getContext('2d');
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [
+                    {
+                        label: 'Monthly Sales (Tk)',
+                        data: monthlySales,
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Monthly Customers',
+                        data: monthlyCustomers,
+                        backgroundColor: 'rgba(23, 162, 184, 0.2)',
+                        borderColor: 'rgba(23, 162, 184, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+}

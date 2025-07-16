@@ -1,0 +1,47 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.PayDueDto>
+<div class="table-responsive">
+    <table class="table table-striped" id="payTable">
+        <thead class="table-secondary">
+            <tr>
+                <th class="align-middle">Customer Name</th>
+                <th class="text-center align-middle">Invoice Number</th>
+                <th class="text-center align-middle">Pay Date</th>
+                <th class="text-center align-middle">Pay Amount</th>
+                <th class="text-center align-middle">Due Amount</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model.Items)
+            {
+                <tr>
+                    <td class=" align-middle">@invoice.CustomerName</td>
+                    <td class="text-center align-middle">@invoice.InvoiceNumber</td>
+                    <td class="text-center align-middle">@invoice.PayDate.ToString("yyyy-MM-dd hh:mm tt")</td>
+                    <td class="text-center align-middle">@invoice.CurrentPay</td>
+                    <td class="text-center align-middle">@invoice.CurrentDue</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <span>Showing page @Model.PageNumber of @Model.TotalPages (Total: @Model.TotalItems)</span>
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadPayPage(@(Model.PageNumber - 1))">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="javascript:void(0);" onclick="loadPayPage(@i)">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadPayPage(@(Model.PageNumber + 1))">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

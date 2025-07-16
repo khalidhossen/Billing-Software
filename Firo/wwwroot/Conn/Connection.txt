@@ -1,0 +1,1 @@
+Server=DESKTOP-URU2K88\SQLEXPRESS;Database=FIROBILL;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True

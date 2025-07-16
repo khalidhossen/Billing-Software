@@ -1,0 +1,110 @@
+﻿@using Firo.Application.Models
+@model LookUpDto
+@{
+	ViewData["Title"] = "LookUp Create";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="card card-primary">
+            <div class="card-header py-1">
+                <h4 class="card-title">LookUp Information</h4>
+            </div>
+            <form id="LookUpForm" method="post" enctype="multipart/form-data" class="p-3 border rounded shadow-sm bg-light">
+                <input type="hidden" id="LookUpId" name="LookUpId" value="@Model.LookUpId" />
+
+                <div class="row g-2 align-items-end">
+                    <div class="col-md">
+                        <label class="form-label">Data Key</label>
+                        <input type="text" class="form-control" name="DataKey" id="dataKey" value="@Model.DataKey" />
+                    </div>
+
+                    <div class="col-md">
+                        <label class="form-label">Display Text</label>
+                        <input type="text" class="form-control" name="DisplayText" value="@Model.DisplayText" />
+                    </div>
+
+                    <div class="col-md">
+                        <label class="form-label">Data Value</label>
+                        <input type="text" class="form-control" name="DataValue" value="@Model.DataValue" />
+                    </div>
+
+                    <div class="col-md">
+                        <label class="form-label">Data Order</label>
+                        <input type="text" class="form-control" name="DataOrder" value="@Model.DataOrder" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Is Active</label><br />
+                        <select class="form-select form-select-lg" name="IsActive" style="height: 40px; min-width: 150px;">
+                            <option value="true" @(Model.IsActive ? "selected" : "")>Yes</option>
+                            <option value="false" @(!Model.IsActive ? "selected" : "")>No</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-auto">
+                        <button type="button" class="btn btn-primary" id="saveLookUp">Add Item</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary">
+            <div class="card-header py-1">
+                <h4 class="card-title">LookUp List</h4>
+            </div>
+            <div class="row gx-2 gy-2 align-items-end card-body">
+                <table class="table table-bordered" id="lookUpTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data Key</th>
+                            <th>Display Text</th>
+                            <th>Data Value</th>
+                            <th>Data Order</th>
+                            <th>Is Active</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lookUpBody">
+                        <!-- New rows will go here -->
+                        @if (ViewBag.DataList != null)
+                        {
+                            foreach (var item in (IEnumerable<Firo.Application.Models.LookUpDto>)ViewBag.DataList)
+                            {
+                                <tr>
+                                    <td>@item.DataKey</td>
+                                    <td>@item.DisplayText</td>
+                                    <td>@item.DataValue</td>
+                                    <td>@item.DataOrder</td>
+                                    <td>@(item.IsActive ? "Yes" : "No")</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm edit-btn"
+                                                data-id="@item.LookUpId"
+                                                data-key="@item.DataKey"
+                                                data-text="@item.DisplayText"
+                                                data-value="@item.DataValue"
+                                                data-order="@item.DataOrder"
+                                                data-active="@item.IsActive.ToString().ToLower()">
+                                            Edit
+                                        </button>
+                                        <button class="btn btn-danger btn-sm delete-btn" data-id="@item.LookUpId">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/CustomJs/CreateLookUp.js"></script>
+}

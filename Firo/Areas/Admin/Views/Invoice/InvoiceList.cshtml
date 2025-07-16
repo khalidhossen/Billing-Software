@@ -1,0 +1,105 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.InvoiceDto>
+@{
+    ViewData["Title"] = "Invoices";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3 class="mb-3">Invoices</h3>
+
+<div class="card">
+    <div class="card-body">
+        <div id="invoiceTableContainer">
+            @await Html.PartialAsync("/Areas/Admin/Views/PartialViews/_InvoiceTablePartial.cshtml", Model)
+        </div>
+    </div>
+</div>
+<!-- Invoice Details Modal -->
+
+<div class="modal fade" id="invoiceDetailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-file-invoice"></i> Invoice Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Invoice Summary -->
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div><strong>Invoice Number:</strong> <span id="detailInvoiceNumber"></span></div>
+                            <div><strong>Customer Name:</strong> <span id="detailCustomerName"></span></div>
+                            <div><strong>Phone No:</strong> <span id="detailCustomerPhone"></span></div>
+                            <div><strong>Address:</strong> <span id="detailCustomerAddress"></span></div>
+                            <div><strong>Invoice Date:</strong> <span id="detailInvoiceDate"></span></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div><strong>Grand Total:</strong> <span class="text-success fw-bold" id="detailGrandTotal"></span></div>
+                            <div><strong>Total Discount:</strong> <span class="text-success fw-bold" id="detailTotalDiscount"></span></div>
+
+                            <div><strong>Pay Amount:</strong> <span class="text-primary fw-bold" id="detailPayAmount"></span></div>
+                            <div><strong>Exchange Amount:</strong> <span class="text-info fw-bold" id="detailExchangeAmount"></span></div>
+                            <div><strong>Due Amount:</strong> <span class="text-danger fw-bold" id="detailDueAmount"></span></div>
+                            <div><strong>Paid:</strong> <span class="text-success fw-bold" id="detailPaid"></span></div>
+                        </div>
+                    </div>
+
+                    <!-- Product Table -->
+                    <div class="mt-4">
+                        <h5 class="mb-3">Product Details</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-bordered align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Discount</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/CustomJs/InvoiceCreate.js"></script>
+
+    @* <script src="~/js/dataTables.js"></script> *@
+
+    <script>
+        
+        function loadInvoicePage(pageNumber) {
+            $.ajax({
+                url: '@Url.Action("InvoiceList", "Invoice")',
+                type: 'GET',
+                data: { page: pageNumber },
+                success: function (result) {
+                    $('#invoiceTableContainer').html(result);
+                },
+                error: function () {
+                    alert('Error loading data.');
+                }
+            });
+        }
+    </script>
+
+
+}

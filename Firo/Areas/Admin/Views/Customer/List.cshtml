@@ -1,0 +1,35 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.CustomerDto>
+@{
+    ViewData["Title"] = "Customers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Customer List</h5>
+    </div>
+    <div class="card-body">
+        <div id="customerTableContainer">
+            @await Html.PartialAsync("/Areas/Admin/Views/PartialViews/_CustomerTablePartial.cshtml", Model)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadCustomerPage(pageNumber) {
+            $.ajax({
+                url: '@Url.Action("List", "Customer")',
+                type: 'GET',
+                data: { page: pageNumber },
+                success: function (result) {
+                    $('#customerTableContainer').html(result);
+                },
+                error: function () {
+                    alert('Failed to load data.');
+                }
+            });
+        }
+    </script>
+}
+
+

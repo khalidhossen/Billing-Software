@@ -1,0 +1,159 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.InvoiceDto>
+@{
+    ViewData["Title"] = "Invoices";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3 class="mb-3">Invoices</h3>
+
+<div class="card">
+    <div class="card-body">
+        <div id="dueTableContainer">
+            @await Html.PartialAsync("/Areas/Admin/Views/PartialViews/_DueTablePartial.cshtml", Model)
+        </div>
+    </div>
+</div>
+
+<!-- Pay Due Modal -->
+<div class="modal fade" id="payDueModal" tabindex="-1" aria-labelledby="payDueLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- Larger modal -->
+        <div class="modal-content shadow-lg border-0">
+            <form id="payDueForm">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-wallet me-2"></i>Pay Due</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <!-- Hidden Invoice ID -->
+                    <input type="hidden" id="invoiceId" name="InvoiceId" />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="fw-bold">Invoice Number</label>
+                            <input type="text" class="form-control" id="modalInvoiceNumber" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold">Customer Name</label>
+                            <input type="text" class="form-control" id="modalCustomerName" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="fw-bold">Grand Total</label>
+                            <input type="text" class="form-control bg-light" id="modalGrandTotal" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold">Pay Date</label>
+                            <input type="datetime-local" class="form-control bg-light" id="modalPayDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="fw-bold">Due Amount</label>
+                            <input type="text" class="form-control bg-light" id="modalDueAmount" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold">Paid Amount</label>
+                            <input type="text" class="form-control bg-light" id="modalPaidAmount" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="fw-bold text-success">Updated Due Amount</label>
+                            <input type="text" class="form-control bg-light" id="modalUpdatedDueAmount" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold text-primary">Enter Payment Amount</label>
+                            <input type="number" min="0" step="0.01" class="form-control border-primary" name="PayAmount" id="modalPaidAmount" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light px-4 py-3 d-flex justify-content-between">
+                    @* <button type="button" id="downloadPdfButton" class="btn btn-outline-primary">
+                        <i class="fas fa-file-pdf me-1"></i>Download PDF
+                    </button> *@
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-1"></i>Submit Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/CustomJs/InvoiceCreate.js"></script>
+    <script>
+        // function setCurrentDateTime() {
+        //     const now = new Date();
+        //     const year = now.getFullYear();
+        //     const month = String(now.getMonth() + 1).padStart(2, '0');
+        //     const day = String(now.getDate()).padStart(2, '0');
+        //     const hours = String(now.getHours()).padStart(2, '0');
+        //     const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        //     const formatted = `${year}-${month}-${day}T${hours}:${minutes}`;
+        //     $("#modalPayDate").val(formatted);
+        // }
+
+        // // Call this when modal is opened
+        // $('#payDueModal').on('shown.bs.modal', function () {
+        //     setCurrentDateTime();
+        // });
+        // $('#downloadPdfButton').on('click', function () {
+        //     const payData = {
+        //         InvoiceNumber: $('#modalInvoiceNumber').val(),
+        //         CustomerName: $('#modalCustomerName').val(),
+        //         GrandTotal: $('#modalGrandTotal').val(),
+        //         PayDate: $('#modalPayDate').val(),
+        //         DueAmount: $('#modalDueAmount').val(),
+        //         PaidAmount: $('#modalPaidAmount').val(),
+        //         UpdatedDueAmount: $('#modalUpdatedDueAmount').val(),
+        //         PayAmount: $("[name='PayAmount']").val()
+        //     };
+
+        //     $.ajax({
+        //         url: '/Invoice/DownloadPayDuePdf', // Adjust controller route
+        //         method: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(payData),
+        //         xhrFields: { responseType: 'blob' },
+        //         success: function (blob) {
+        //             const url = window.URL.createObjectURL(blob);
+        //             const a = document.createElement('a');
+        //             a.href = url;
+        //             a.download = `PayDue_${payData.InvoiceNumber}.pdf`;
+        //             document.body.appendChild(a);
+        //             a.click();
+        //             a.remove();
+        //         },
+        //         error: function () {
+        //             alert('Failed to generate PDF');
+        //         }
+        //     });
+        // });
+        // function loadInvoicePage(pageNumber) {
+        //     $.ajax({
+        //         url: '@Url.Action("DueList", "Invoice")',
+        //         type: 'GET',
+        //         data: { page: pageNumber },
+        //         success: function (result) {
+        //             $('#dueTableContainer').html(result);
+        //         },
+        //         error: function () {
+        //             alert('Error loading data.');
+        //         }
+        //     });
+        // }
+    </script>
+
+
+}

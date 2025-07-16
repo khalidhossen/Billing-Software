@@ -1,0 +1,63 @@
+﻿@model Firo.Application.Models.PaginatedResult<Firo.Application.Models.CustomerDto>
+
+<table class="table table-striped">
+    <thead class="table-secondary">
+        <tr>
+            <th>Customer Name</th>
+            <th>Customer Type</th>
+            <th>Company</th>
+            <th>Branch</th>
+            <th>Phone</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model.Items)
+        {
+            <tr>
+                <td>@customer.FullName</td>
+                <td>@customer.CustomerType</td>
+                <td>@customer.CompanyName</td>
+                <td>@customer.BranchName</td>
+                <td>@customer.Phone</td>
+                <td>@(customer.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <div d-flex justify-content-center gap-2">
+                        <a href="@Url.Action("Edit", "Customer", new { id = customer.CustomerId })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", "Customer", new { id = customer.CustomerId })" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <span>Showing page @Model.PageNumber of @Model.TotalPages (Total items: @Model.TotalItems)</span>
+
+    <nav>
+        <ul class="pagination mb-0">
+
+            @* Previous Button *@
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="javascript:void(0);" onclick="loadCustomerPage(@(Model.PageNumber - 1))">Previous</a>
+            </li>
+
+            @* Page Numbers *@
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadCustomerPage(@i)">@i</a>
+                </li>
+            }
+
+            @* Next Button *@
+            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="javascript:void(0);" onclick="loadCustomerPage(@(Model.PageNumber + 1))">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
